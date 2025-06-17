@@ -40,13 +40,12 @@ class StudentService extends ApiService {
       final userId = (await ApiSessionStorage.getSession()).userId;
       final response = await get('/students/user/$userId');
       
-      if (response == null || response['data'] == null) {
+      if (response['data'] == null) {
         return null;
       }
 
       return Student.fromJson(response['data']);
     } catch (e) {
-      print('Error fetching student: $e');
       return null;
     }
   }

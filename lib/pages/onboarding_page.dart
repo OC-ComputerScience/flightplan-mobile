@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
 import '../services/service_locator.dart';
 import '../services/api_session_storage.dart';
 
@@ -37,12 +36,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
     try {
       // Load semesters
       final semestersResponse = await _serviceLocator.api.get('/semesters');
-      if (semestersResponse != null && semestersResponse['data'] != null) {
+      if (semestersResponse['data'] != null) {
         setState(() {
-          _semesterOptions = (semestersResponse['data'] as List).map((semester) {
+          _semesterOptions =
+              (semestersResponse['data'] as List).map((semester) {
             return {
               'id': semester['id'],
-              'title': '${semester['term'].toString().toUpperCase()} ${semester['year']}',
+              'title':
+                  '${semester['term'].toString().toUpperCase()} ${semester['year']}',
               'endDate': DateTime.parse(semester['endDate']),
             };
           }).toList();
@@ -51,11 +52,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
       // Load majors
       final majorsResponse = await _serviceLocator.api.get('/majors');
-      print('Majors response: $majorsResponse'); // Debug log
-      if (majorsResponse != null && majorsResponse['data'] != null) {
+      if (majorsResponse['data'] != null) {
         setState(() {
           _majorOptions = (majorsResponse['data'] as List).map((major) {
-            print('Major data: $major'); // Debug log
             return {
               'id': major['id'] as int,
               'title': major['name'] as String,
@@ -66,9 +65,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
       // Load strengths
       final strengthsResponse = await _serviceLocator.api.get('/strengths');
-      if (strengthsResponse != null && strengthsResponse['data'] != null) {
+      if (strengthsResponse['data'] != null) {
         setState(() {
-          _strengthOptions = (strengthsResponse['data'] as List).map((strength) {
+          _strengthOptions =
+              (strengthsResponse['data'] as List).map((strength) {
             return {
               'id': strength['id'] as int,
               'title': strength['name'] as String,
@@ -77,7 +77,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
         });
       }
     } catch (e) {
-      print('Error loading options: $e');
       setState(() {
         _errorMessage = 'Error loading options. Please try again.';
       });
@@ -85,12 +84,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Future<void> _handleSubmit() async {
-    print('Starting form submission...');
     if (!_formKey.currentState!.validate()) {
-      print('Form validation failed');
       return;
     }
-    print('Form validation passed');
 
     setState(() {
       _isLoading = true;
@@ -99,86 +95,64 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
     try {
       final userId = (await ApiSessionStorage.getSession()).userId;
-      print('Got user ID: $userId');
-      
+
       // Create student
       final studentData = {
         'userId': userId,
         'graduationDate': _selectedGradDate?.toIso8601String(),
-        'semestersFromGrad': _semesterOptions.indexWhere((s) => s['endDate'] == _selectedGradDate) + 1,
+        'semestersFromGrad': _semesterOptions
+                .indexWhere((s) => s['endDate'] == _selectedGradDate) +
+            1,
         'pointsAwarded': 0,
         'pointsUsed': 0,
       };
-      
-      print('Creating student with data: $studentData');
-      
-      final studentResponse = await _serviceLocator.api.post('/students', studentData);
-      print('Student creation response: $studentResponse');
 
-      if (studentResponse == null || studentResponse['id'] == null) {
-        print('Student creation failed: ${studentResponse?['message'] ?? 'Unknown error'}');
-        throw Exception('Failed to create student: ${studentResponse?['message'] ?? 'Unknown error'}');
+      final studentResponse =
+          await _serviceLocator.api.post('/students', studentData);
+
+      if (studentResponse['id'] == null) {
+        throw Exception(
+            'Failed to create student: ${studentResponse['message'] ?? 'Unknown error'}');
       }
 
       final studentId = studentResponse['id'];
-      print('Student created with ID: $studentId');
 
       // Update user profile
-      print('Updating user profile...');
       final userUpdateData = {
         'id': userId,
         'profileDescription': _profileDescription,
       };
-      print('User update data: $userUpdateData');
-      
-      final userUpdateResponse = await _serviceLocator.api.put('/user/${userId}', userUpdateData);
-      print('User update response: $userUpdateResponse');
+
+      await _serviceLocator.api.put('/user/$userId', userUpdateData);
 
       // Add majors
-      print('Selected majors: $_selectedMajors');
       for (final majorId in _selectedMajors) {
-        print('Adding major: $majorId');
         final majorData = {
           'majorId': majorId,
         };
-        print('Major data: $majorData');
-        final majorResponse = await _serviceLocator.api.put('/students/$studentId/majors', majorData);
-        print('Major response: $majorResponse');
+        await _serviceLocator.api.put('/students/$studentId/majors', majorData);
       }
 
       // Add strengths
-      print('Selected strengths: $_selectedStrengths');
       for (final strengthId in _selectedStrengths) {
         try {
-          print('Adding strength: $strengthId');
           final strengthData = {
             'strengthId': strengthId,
           };
-          print('Strength data: $strengthData');
-          final strengthResponse = await _serviceLocator.api.put('/students/$studentId/strengths', strengthData);
-          print('Strength response: $strengthResponse');
-          
-          // If we get here, the strength was added successfully
-          // Even if the response is empty, we can continue
-          if (strengthResponse == null) {
-            print('Warning: Empty response for strength $strengthId, but continuing...');
-          }
+          await _serviceLocator.api.put('/students/$studentId/strengths', strengthData);
         } catch (e) {
-          print('Warning: Error adding strength $strengthId: $e');
           // Continue with other strengths even if one fails
           continue;
         }
       }
 
-      print('All operations completed successfully');
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/home');
       }
-    } catch (e, stackTrace) {
-      print('Error submitting form: $e');
-      print('Stack trace: $stackTrace');
+    } catch (e) {
       setState(() {
-        _errorMessage = 'An error occurred while saving your information: ${e.toString()}';
+        _errorMessage =
+            'An error occurred while saving your information: ${e.toString()}';
       });
     } finally {
       if (mounted) {
@@ -190,12 +164,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Widget _buildMultiSelectChips(
-    String label,
-    List<Map<String, dynamic>> options,
-    List<int> selectedIds,
-    Function(List<int>) onSelectionChanged,
-    {bool isRequired = true, int? maxSelections}
-  ) {
+      String label,
+      List<Map<String, dynamic>> options,
+      List<int> selectedIds,
+      Function(List<int>) onSelectionChanged,
+      {bool isRequired = true,
+      int? maxSelections}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -215,11 +189,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
               onSelected: (selected) {
                 setState(() {
                   if (selected) {
-                    if (maxSelections == null || selectedIds.length < maxSelections) {
+                    if (maxSelections == null ||
+                        selectedIds.length < maxSelections) {
                       onSelectionChanged([...selectedIds, option['id']]);
                     }
                   } else {
-                    onSelectionChanged(selectedIds.where((id) => id != option['id']).toList());
+                    onSelectionChanged(
+                        selectedIds.where((id) => id != option['id']).toList());
                   }
                 });
               },
@@ -363,4 +339,4 @@ class _OnboardingPageState extends State<OnboardingPage> {
       ),
     );
   }
-} 
+}
