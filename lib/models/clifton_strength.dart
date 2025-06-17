@@ -1,11 +1,11 @@
-class StrengthModel {
+class CliftonStrength {
   final int id;
   final String name;
   final String domain;
   final String description;
   final int? number;
 
-  StrengthModel({
+  CliftonStrength({
     required this.id,
     required this.name,
     required this.domain,
@@ -13,8 +13,8 @@ class StrengthModel {
     this.number,
   });
 
-  factory StrengthModel.fromJson(Map<String, dynamic> json) {
-    return StrengthModel(
+  factory CliftonStrength.fromJson(Map<String, dynamic> json) {
+    return CliftonStrength(
       id: json['id'] as int,
       name: json['name'] as String,
       domain: json['domain'] as String,

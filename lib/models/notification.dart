@@ -1,4 +1,4 @@
-class NotificationModel {
+class Notification {
   final int id;
   final String header;
   final String description;
@@ -7,7 +7,7 @@ class NotificationModel {
   final DateTime createdAt;
   final Map<String, dynamic> user;
 
-  NotificationModel({
+  Notification({
     required this.id,
     required this.header,
     required this.description,
@@ -17,8 +17,8 @@ class NotificationModel {
     required this.user,
   });
 
-  factory NotificationModel.fromJson(Map<String, dynamic> json) {
-    return NotificationModel(
+  factory Notification.fromJson(Map<String, dynamic> json) {
+    return Notification(
       id: json['id'] as int,
       header: json['header'] as String,
       description: json['description'] as String,

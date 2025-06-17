@@ -1,7 +1,7 @@
 import 'api_service.dart';
 import '../services/api_session_storage.dart';
 
-class BadgeModel {
+class Badge {
   final int id;
   final String name;
   final String description;
@@ -12,7 +12,7 @@ class BadgeModel {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  BadgeModel({
+  Badge({
     required this.id,
     required this.name,
     required this.description,
@@ -24,8 +24,8 @@ class BadgeModel {
     required this.updatedAt,
   });
 
-  factory BadgeModel.fromJson(Map<String, dynamic> json) {
-    return BadgeModel(
+  factory Badge.fromJson(Map<String, dynamic> json) {
+    return Badge(
       id: json['id'] as int,
       name: json['name'] as String,
       description: json['description'] as String,
@@ -40,7 +40,7 @@ class BadgeModel {
 }
 
 class BadgeResponse {
-  final List<BadgeModel> badges;
+  final List<Badge> badges;
   final int total;
 
   BadgeResponse({
@@ -65,8 +65,7 @@ class BadgeService extends ApiService {
       final List<dynamic> badgesJson = responseMap['badges'] ?? [];
       final total = responseMap['total'] ?? 0;
 
-      final badges =
-          badgesJson.map((json) => BadgeModel.fromJson(json)).toList();
+      final badges = badgesJson.map((json) => Badge.fromJson(json)).toList();
 
       return BadgeResponse(badges: badges, total: total);
     } catch (e) {

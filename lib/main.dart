@@ -15,7 +15,8 @@ void main() async {
   // Initialize service locator
   final serviceLocator = ServiceLocator();
   serviceLocator.initialize(
-    baseUrl: 'https://flightplan.eaglesoftwareteam.com/flight-plan-t1',
+    baseUrl: 'https://flightplandev.oc.edu/flight-plan-t1',
+    // baseUrl: 'https://flightplan.eaglesoftwareteam.com/flight-plan-t1',
   );
 
   // Get the current user from Firebase Auth
