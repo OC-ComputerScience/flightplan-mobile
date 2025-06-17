@@ -3,7 +3,7 @@ import 'service_locator.dart';
 import '../services/api_session_storage.dart';
 
 class NotificationResponse {
-  final List<NotificationModel> notifications;
+  final List<Notification> notifications;
   final int totalPages;
 
   NotificationResponse({
@@ -33,7 +33,7 @@ class NotificationService {
       final totalPages = (total / pageSize).ceil();
 
       final notifications = notificationsJson
-          .map((json) => NotificationModel.fromJson(json))
+          .map((json) => Notification.fromJson(json))
           .toList();
 
       return NotificationResponse(

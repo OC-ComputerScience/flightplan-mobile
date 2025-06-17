@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Badge;
 import 'package:google_sign_in/google_sign_in.dart';
 import '../theme/app_theme.dart';
-import '../models/strength.dart';
+import '../models/clifton_strength.dart';
 import '../models/link.dart';
 import '../services/strength_service.dart';
 import '../services/user_service.dart';
@@ -21,9 +21,9 @@ class _ProfilePageState extends State<ProfilePage> {
   int _currentPage = 1;
   final int _pageSize = 6;
   int _totalPages = 1;
-  List<StrengthModel> _strengths = [];
-  List<LinkModel> _links = [];
-  List<BadgeModel> _badges = [];
+  List<CliftonStrength> _strengths = [];
+  List<Link> _links = [];
+  List<Badge> _badges = [];
   bool _isLoading = true;
   UserProfile? _userProfile;
   int? _expandedStrengthIndex; // Track which strength is expanded
@@ -52,7 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
       final userProfile = results[0] as UserProfile;
       final strengthResponse = results[1] as StrengthResponse;
-      final links = results[2] as List<LinkModel>;
+      final links = results[2] as List<Link>;
       final badgeResponse = results[3] as BadgeResponse;
 
       setState(() {
@@ -515,7 +515,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildStrengthCard(StrengthModel strength, int index) {
+  Widget _buildStrengthCard(CliftonStrength strength, int index) {
     return StatefulBuilder(
       builder: (context, setState) {
         final isExpanded = _expandedStrengthIndex == index;

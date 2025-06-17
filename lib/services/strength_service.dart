@@ -1,10 +1,10 @@
 import '../services/api_session_storage.dart';
 
-import '../models/strength.dart';
+import '../models/clifton_strength.dart';
 import 'api_service.dart';
 
 class StrengthResponse {
-  final List<StrengthModel> strengths;
+  final List<CliftonStrength> strengths;
   final int totalPages;
   final String? errorMessage;
 
@@ -42,7 +42,7 @@ class StrengthService extends ApiService {
       strengthsJson = (response['data'] as List<dynamic>?) ?? [];
 
       final strengths =
-          strengthsJson.map((json) => StrengthModel.fromJson(json)).toList();
+          strengthsJson.map((json) => CliftonStrength.fromJson(json)).toList();
 
       return StrengthResponse(
         strengths: strengths,

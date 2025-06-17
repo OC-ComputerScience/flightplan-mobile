@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../models/notification.dart';
+import '../models/notification.dart' as n;
 import '../services/notification_service.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -12,7 +12,7 @@ class NotificationPage extends StatefulWidget {
 
 class NotificationPageState extends State<NotificationPage> {
   late NotificationService _notificationService;
-  List<NotificationModel> _notifications = [];
+  List<n.Notification> _notifications = [];
   bool _isLoading = true;
   bool _isLoadingMore = false;
   int _currentPage = 1;
@@ -95,24 +95,24 @@ class NotificationPageState extends State<NotificationPage> {
     }
   }
 
-  Future<void> _markAsRead(NotificationModel notification) async {
+  Future<void> _markAsRead(n.Notification notification) async {
     try {
       await _notificationService.markAsRead(notification.id);
 
       setState(() {
-        _notifications = _notifications.map((n) {
-          if (n.id == notification.id) {
-            return NotificationModel(
-              id: n.id,
-              header: n.header,
-              description: n.description,
-              actionLink: n.actionLink,
+        _notifications = _notifications.map((notif) {
+          if (notif.id == notification.id) {
+            return n.Notification(
+              id: notif.id,
+              header: notif.header,
+              description: notif.description,
+              actionLink: notif.actionLink,
               read: true,
-              createdAt: n.createdAt,
-              user: n.user,
+              createdAt: notif.createdAt,
+              user: notif.user,
             );
           }
-          return n;
+          return notif;
         }).toList();
       });
     } catch (e) {
@@ -206,7 +206,7 @@ class NotificationPageState extends State<NotificationPage> {
     }
   }
 
-  void _showNotificationDetails(NotificationModel notification) {
+  void _showNotificationDetails(n.Notification notification) {
     if (!notification.read) {
       _markAsRead(notification);
     }
@@ -280,7 +280,7 @@ class NotificationPageState extends State<NotificationPage> {
     );
   }
 
-  void _toggleNotificationSelection(NotificationModel notification) {
+  void _toggleNotificationSelection(n.Notification notification) {
     if (_selectedNotifications.contains(notification.id)) {
       _selectedNotifications.remove(notification.id);
     } else {
@@ -507,19 +507,19 @@ class NotificationPageState extends State<NotificationPage> {
         _selectedNotifications.map((id) => _notificationService.markAsRead(id)),
       );
       setState(() {
-        _notifications = _notifications.map((n) {
-          if (_selectedNotifications.contains(n.id)) {
-            return NotificationModel(
-              id: n.id,
-              header: n.header,
-              description: n.description,
-              actionLink: n.actionLink,
+        _notifications = _notifications.map((notif) {
+          if (_selectedNotifications.contains(notif.id)) {
+            return n.Notification(
+              id: notif.id,
+              header: notif.header,
+              description: notif.description,
+              actionLink: notif.actionLink,
               read: true,
-              createdAt: n.createdAt,
-              user: n.user,
+              createdAt: notif.createdAt,
+              user: notif.user,
             );
           }
-          return n;
+          return notif;
         }).toList();
         _selectedNotifications.clear();
       });
