@@ -6,7 +6,6 @@ class Auth extends ApiService {
   Auth({required super.baseUrl});
 
   Future<ApiSession> login(String? idToken) async {
-    print('login: $idToken');
     if (idToken == null) {
       throw Exception(
         'ID token is null. Please check Google Sign-In configuration.',
@@ -18,8 +17,6 @@ class Auth extends ApiService {
       'clientType': 'firebase',
     });
 
-    print('session: $session');
-    // save token to make student request
     ApiSessionStorage.saveSession(
       ApiSession.fromJson({
         'token': session['token'],
@@ -29,11 +26,10 @@ class Auth extends ApiService {
       }),
     );
 
-    print('$session: ${session['userId']}');
+    print('Session $session: ${session['userId']}');
     
     final student = await get('/students/user/${session['userId']}');
 
-    // save complete session
     final apiSession = ApiSession.fromJson({
       'token': session['token'],
       'userId': session['userId'],

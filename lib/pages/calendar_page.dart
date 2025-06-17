@@ -174,7 +174,7 @@ class CalendarPageState extends State<CalendarPage> {
         });
       }
 
-      if (!_isDisposed) {
+      if (!_isDisposed && mounted) {
         Navigator.pop(context);
       }
     } catch (e) {
@@ -200,7 +200,7 @@ class CalendarPageState extends State<CalendarPage> {
         });
       }
 
-      if (!_isDisposed) {
+      if (!_isDisposed && mounted) {
         Navigator.pop(context);
       }
     } catch (e) {
