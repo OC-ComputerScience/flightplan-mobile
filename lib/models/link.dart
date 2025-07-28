@@ -1,11 +1,11 @@
-class LinkModel {
+class Link {
   final int id;
   final String websiteName;
   final String link;
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  LinkModel({
+  Link({
     required this.id,
     required this.websiteName,
     required this.link,
@@ -13,8 +13,8 @@ class LinkModel {
     required this.updatedAt,
   });
 
-  factory LinkModel.fromJson(Map<String, dynamic> json) {
-    return LinkModel(
+  factory Link.fromJson(Map<String, dynamic> json) {
+    return Link(
       id: json['id'] as int,
       websiteName: json['websiteName'] as String,
       link: json['link'] as String,

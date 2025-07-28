@@ -1,6 +1,6 @@
 import 'api_service.dart';
 import 'auth.dart';
-import 'flight_plan.dart';
+import 'flight_plan_service.dart';
 import 'event_service.dart';
 import 'strength_service.dart';
 import 'link_service.dart';
